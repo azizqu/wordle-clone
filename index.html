@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+            rel="stylesheet"
+    />
+    <title>Wordle Clone</title>
+</head>
+<body>
+<div class="container">
+    <div class="game text-center" id='game'>
+        <header class="header">
+            <h1 class="title">WORDLE</h1>
+            <div class="reset">
+                <button type="button" class="btn btn-primary" id="reset">Start New Game</button>
+            </div>
+        </header>
+        <div id="board-container">
+            <div id="board"></div>
+        </div>
+
+        <div id="keyboard-container">
+            <div class="keyboard-row">
+                <button data-key="q">q</button>
+                <button data-key="w">w</button>
+                <button data-key="e">e</button>
+                <button data-key="r">r</button>
+                <button data-key="t">t</button>
+                <button data-key="y">y</button>
+                <button data-key="u">u</button>
+                <button data-key="i">i</button>
+                <button data-key="o">o</button>
+                <button data-key="p">p</button>
+            </div>
+            <div class="keyboard-row">
+                <div class="spacer-half"></div>
+                <button data-key="a">a</button>
+                <button data-key="s">s</button>
+                <button data-key="d">d</button>
+                <button data-key="f">f</button>
+                <button data-key="g">g</button>
+                <button data-key="h">h</button>
+                <button data-key="j">j</button>
+                <button data-key="k">k</button>
+                <button data-key="l">l</button>
+                <div class="spacer-half"></div>
+            </div>
+            <div class="keyboard-row">
+                <button class="wide-button" data-key="enter">Enter</button>
+                <button data-key="z">z</button>
+                <button data-key="x">x</button>
+                <button data-key="c">c</button>
+                <button data-key="v">v</button>
+                <button data-key="b">b</button>
+                <button data-key="n">n</button>
+                <button data-key="m">m</button>
+                <button class="wide-button" data-key="del">Del</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="app.js"></script>
+</body>
+</html>
