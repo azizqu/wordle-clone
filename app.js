@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentWordArr && currentWordArr.length < 5) { //at the current word array and if less than the 5th index (max 5 letters)
             currentWordArr.push(letter);
 
-            const availSpaceEl = document.getElementById(String(availSpace))
+            const availSpaceEl = document.getElementById(String(availSpace)) //index of tile where letter would go
             availSpace = availSpace + 1; //increment availSpace by 1
             availSpaceEl.textContent = letter; //insert letter into availSpace element
 
@@ -235,6 +235,20 @@ document.addEventListener('DOMContentLoaded', () => {
         getTiles.forEach(el => {
             el.remove();
         })
+        //remove keyboard styles
+        const keyBoard = document.querySelectorAll(`[data-key]`);
+        console.log(keyBoard);
+
+        for (const keyBoardElement of keyBoard) {
+            keyBoardElement.style.color = 'gainsboro'
+            keyBoardElement.style.opacity = '1';
+        }
+
+
+
+
+
+
         //clear the board
         // clearBoard();
 
