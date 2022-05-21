@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let availSpace = 1; //always going to be 1 initially as you can input only 1 letter at a time starting from first array element
     let word = '';
     let guessedWordCount = 0;
+    const keys = document.querySelectorAll('.keyboard-row button');
 
     async function getData() {
         try {
@@ -29,8 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Word is: ${res}`);
         })
 
-
-    const keys = document.querySelectorAll('.keyboard-row button')
 
     function getCurrentWordArr() {
         const numberOfGuessedWords = guessedWords.length //zero at the start as guessedWords array is empty
@@ -75,6 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //animation + color for when word is submitted (green for correct place and letter, yellow for correct letter, grey for incorrect letter)
 
+        function updateKeyboard(letter, color) {
+            console.log(letter);
+            console.log(color); //apply this color to keys loop through keys and match with data-attribute
+            const keyBoard = document.querySelectorAll(`[data-key=${letter}]`);
+            keyBoard[0].style.color = color
+            keyBoard[0].style.opacity = '0.5';
+            console.log(keyBoard);
+
+
+        }
+
         function checkWord(letter, index) {
             console.log(`checking for letter in ${word}`, letter);
             const correctLetter = word.includes(letter);
@@ -83,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // no correct letters apply regular color
                 const color = 'rgb(58,58,60)';
                 console.log('no correct letters in word');
+                updateKeyboard(letter, color);
                 return color;
             }
 
@@ -95,12 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (letterPosition === index) {
                 //correct letter + position GREEN
+                const color = 'rgb(34,139,34)'
                 console.log('correct letter and position')
-                return 'rgb(34,139,34)';
+                updateKeyboard(letter, color);
+                return color;
             } else {
                 //correct letter but not correct position YELLOW
+                const color = 'rgb(201 180 88)';
                 console.log('correct letter but not correct position')
-                return 'rgb(201 180 88)';
+                updateKeyboard(letter, color);
+                return color;
             }
 
         }
@@ -124,8 +139,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(tileEl);
 
             }, interval)
+
+            // for (let i = 0; i < keys.length; i++) {
+            //
+            //     const key = target.getAttribute('data-key');
+            //     console.log(key);
+            // }
+
+
         })
         guessedWordCount++;
+
+        //apply color update to keyboard
 
         if (currentWord === word) {
             return alert('Congratulations You Got The Word!');
@@ -143,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`total guessed words: ${guessedWordCount}`)
         // console.log(`total guessed words: ${guessedWords.length}`)
 
-        //do this after checking if wordIsValid() function passes or count may be off
+        //push after checking wordIsValid() logic
 
         guessedWords.push([]);//if not correct word push new array into guessedWords array
     }
@@ -151,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleDeleteKey() {
         const currentWordArr = getCurrentWordArr();
         console.log(currentWordArr)
-        if(!currentWordArr.length){
+        if (!currentWordArr.length) {
             return
         }
         //removes from array
@@ -159,10 +184,10 @@ document.addEventListener('DOMContentLoaded', () => {
         //remove from board
 
         //set the current word to new array that removed last el from array
-        guessedWords[guessedWords.length -1] = currentWordArr
-        const lastEl = document.getElementById(availSpace -1);
+        guessedWords[guessedWords.length - 1] = currentWordArr
+        const lastEl = document.getElementById(String(availSpace - 1));
         lastEl.innerHTML = "";
-        availSpace = availSpace -1
+        availSpace = availSpace - 1
 
     }
 
@@ -174,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (letter === 'enter') {
                 handleSubmitWord();
+                    //updateKeyBoard(letter);
                 return
             }
 
