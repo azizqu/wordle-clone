@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let word = '';
     let guessedWordCount = 0;
     const keys = document.querySelectorAll('.keyboard-row button');
+    let lookUp = '';
+    let tempData = null;
+
 
     async function getData() {
         try {
@@ -16,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     function randomWordIndex() {
         const rand = Math.floor((Math.random() * 5757) + 1);
         console.log(rand);
@@ -25,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     getData()
         .then(res => {
             console.log('total number of words in list: ' + res.length);
-            res = res[randomWordIndex()];
-            word = res
-            console.log(`Word is: ${res}`);
+            tempData = res;
+            word = res[randomWordIndex()]; //sets global variable word from the list
+            console.log(`Word is: ${word}`);
         })
 
 
@@ -62,6 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function checkValidWord(wordToCheck) {
+        console.log(`word to check ${wordToCheck}`);
+        lookUp = tempData.find(el => el === `${wordToCheck}`);
+        console.log(lookUp);
+
+        return lookUp !== undefined;
+
+    }
+
     function handleSubmitWord() { //when enter key is pressed
         const currentWordArr = getCurrentWordArr();
         console.log('enter key pressed checking word: ', currentWordArr);
@@ -72,9 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const currentWord = currentWordArr.join('') //takes array and joins into a single string so we can compare to answer
 
+        //check currentWord to make sure it is a valid word
+
+       const isValid = checkValidWord(currentWord);
+        
+        if(!isValid){
+            return alert('Sorry Word is Invalid!');
+        }
+
+
         //animation + color for when word is submitted (green for correct place and letter, yellow for correct letter, grey for incorrect letter)
 
         function updateKeyboard(letter, color) {
+            // if(!lookUp){
+            //     return 'no keyboard update'
+            // }
             console.log(letter);
             console.log(color); //apply this color to keys loop through keys and match with data-attribute
             const keyBoard = document.querySelectorAll(`[data-key=${letter}]`);
@@ -82,10 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
             keyBoard[0].style.opacity = '0.5';
             console.log(keyBoard);
 
-
         }
 
         function checkWord(letter, index) {
+            // if(!lookUp){
+            //     return 'dont check word'
+            // }
             console.log(`checking for letter in ${word}`, letter);
             const correctLetter = word.includes(letter);
 
@@ -97,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return color;
             }
 
-            console.log('there is a correct letter here somewhere')
             //check at what index and apply appropriate color
             const letterPosition = word.indexOf(letter);
 
@@ -107,13 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (letterPosition === index) {
                 //correct letter + position GREEN
                 const color = 'rgb(34,139,34)'
-                console.log('correct letter and position')
+                console.log('correct letter and position');
                 updateKeyboard(letter, color);
                 return color;
             } else {
                 //correct letter but not correct position YELLOW
                 const color = 'rgb(201 180 88)';
-                console.log('correct letter but not correct position')
+                console.log('correct letter but not correct position');
                 updateKeyboard(letter, color);
                 return color;
             }
@@ -140,12 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }, interval)
 
-            // for (let i = 0; i < keys.length; i++) {
-            //
-            //     const key = target.getAttribute('data-key');
-            //     console.log(key);
-            // }
-
 
         })
         guessedWordCount++;
@@ -167,8 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('all guessedwords so far:', guessedWords);
         console.log(`total guessed words: ${guessedWordCount}`)
         // console.log(`total guessed words: ${guessedWords.length}`)
-
-        //push after checking wordIsValid() logic
 
         guessedWords.push([]);//if not correct word push new array into guessedWords array
     }
@@ -199,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (letter === 'enter') {
                 handleSubmitWord();
-                    //updateKeyBoard(letter);
+                //updateKeyBoard(letter);
                 return
             }
 
@@ -211,14 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateGuessedWords(letter);
         })
     }
-    // function clearBoard(){
-    //     for (let i = 0; i < 30; i++) {
-    //         let board = document.getElementById(i + 1);
-    //         board.textContent = '';
-    //         board.style.backgroundColor = 'black';
-    //         board.style.color = 'rgb(58,58,60)';
-    //     }
-    // }
 
     const resetGame = document.getElementById('reset');
     resetGame.addEventListener('click', function () {
@@ -243,14 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
             keyBoardElement.style.color = 'gainsboro'
             keyBoardElement.style.opacity = '1';
         }
-
-
-
-
-
-
-        //clear the board
-        // clearBoard();
 
         //create new board
         createSquares();
