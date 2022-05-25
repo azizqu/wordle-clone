@@ -8,6 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const keys = document.querySelectorAll('.keyboard-row button');
     let lookUp = '';
     let tempData = null;
+    let wordMap = {
+        firstGuess: {},
+        secondGuess: {},
+        thirdGuess: {},
+        fourthGuess: {},
+        fifthGuess: {}
+    }
 
 
     async function getData() {
@@ -30,7 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => {
             console.log('total number of words in list: ' + res.length);
             tempData = res;
+            console.log(tempData.length);
             word = res[randomWordIndex()]; //sets global variable word from the list
+            // word = 'puppy'; //sets global variable word from the list
+            if (word === undefined) {
+                word = res[randomWordIndex()]; //get another word
+            }
             console.log(`Word is: ${word}`);
         })
 
@@ -70,9 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`word to check ${wordToCheck}`);
         lookUp = tempData.find(el => el === `${wordToCheck}`);
         console.log(lookUp);
-
         return lookUp !== undefined;
-
     }
 
     function handleSubmitWord() { //when enter key is pressed
@@ -83,38 +93,60 @@ document.addEventListener('DOMContentLoaded', () => {
             return alert('Word must be 5 letters');
         }
 
-        const currentWord = currentWordArr.join('') //takes array and joins into a single string so we can compare to answer
+        //takes array and joins into a single string so we can compare to answer
+        const currentWord = currentWordArr.join('');
 
         //check currentWord to make sure it is a valid word
 
-       const isValid = checkValidWord(currentWord);
-        
-        if(!isValid){
+        const isValid = checkValidWord(currentWord);
+
+        if (!isValid) {
             return alert('Sorry Word is Invalid!');
         }
+        wordMap.firstGuess = guessedWords[0]
+        wordMap.secondGuess = guessedWords[1]
+        wordMap.thirdGuess = guessedWords[2]
+        wordMap.fourthGuess = guessedWords[3]
+        wordMap.fifthGuess = guessedWords[4]
 
 
         //animation + color for when word is submitted (green for correct place and letter, yellow for correct letter, grey for incorrect letter)
 
         function updateKeyboard(letter, color) {
-            // if(!lookUp){
-            //     return 'no keyboard update'
-            // }
             console.log(letter);
             console.log(color); //apply this color to keys loop through keys and match with data-attribute
             const keyBoard = document.querySelectorAll(`[data-key=${letter}]`);
             keyBoard[0].style.color = color
             keyBoard[0].style.opacity = '0.5';
-            console.log(keyBoard);
-
         }
 
         function checkWord(letter, index) {
-            // if(!lookUp){
-            //     return 'dont check word'
-            // }
             console.log(`checking for letter in ${word}`, letter);
+
+
             const correctLetter = word.includes(letter);
+
+            console.log('is correct letter: ' + correctLetter);//true or false
+            console.log('all guesses so far:', guessedWords);
+
+            let letterPosition = word.indexOf(letter);
+            console.log('my guess:',currentWordArr);
+            let actualWord = word.split('');
+            console.log('actual word: ', actualWord);
+
+            let position = [];
+            let lettersArr = [];
+            for (let i = 0; i < actualWord.length; i++) {
+                if(actualWord[i] === letter){
+                    position.push(i);
+                }
+            }
+            console.log(position); //gives the index(s) where the letter appears...
+
+            // console.log('Word map: ', wordMap);
+            console.log('actual letter position: ', letterPosition);
+            console.log('my letter position: ', index);
+            console.log('repeated letter pos: ', position);
 
             if (!correctLetter) {
                 // no correct letters apply regular color
@@ -124,15 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return color;
             }
 
-            //check at what index and apply appropriate color
-            const letterPosition = word.indexOf(letter);
-
-            console.log('actual letter position: ', letterPosition);
-            console.log('my letter position: ', index);
-
-            if (letterPosition === index) {
+            if ((letterPosition === index || position[1] === index || position[2] === index || position[3] === index)) {
                 //correct letter + position GREEN
-                const color = 'rgb(34,139,34)'
+                const color = 'rgb(34,139,34)';
                 console.log('correct letter and position');
                 updateKeyboard(letter, color);
                 return color;
@@ -151,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const interval = 500; //timeout interval
 
         //loop through current words letters
-
         currentWordArr.forEach((letter, index) => {
 
             setTimeout(() => {
@@ -166,14 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }, interval)
 
-
         })
         guessedWordCount++;
 
         //apply color update to keyboard
 
         if (currentWord === word) {
-            return alert('Congratulations You Got The Word!');
+            return alert(`Congratulations You Got The Word: ${word}!`);
         }
 
         if (guessedWords.length === 6) {
