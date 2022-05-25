@@ -7,17 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let guessedWordCount = 0;
     const keys = document.querySelectorAll('.keyboard-row button');
     let lookUp = '';
-    let tempData = null;
-    let wordMap = {
-        firstGuess: {},
-        secondGuess: {},
-        thirdGuess: {},
-        fourthGuess: {},
-        fifthGuess: {}
-    }
-
-
-    async function getData() {
+    let wordList = null;
+    
+    async function getData() { //fetch wordList asynchronously 
         try {
             let res = await fetch('wordsList.json')
             return await res.json()
@@ -29,27 +21,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function randomWordIndex() {
         const rand = Math.floor((Math.random() * 5757) + 1);
-        console.log(rand);
+        // console.log(rand);
         return rand
     }
 
     getData()
         .then(res => {
-            console.log('total number of words in list: ' + res.length);
-            tempData = res;
-            console.log(tempData.length);
+            // console.log('total number of words in list: ' + res.length);
+            wordList = res;
+            // console.log(wordList.length);
             word = res[randomWordIndex()]; //sets global variable word from the list
             // word = 'puppy'; //sets global variable word from the list
             if (word === undefined) {
                 word = res[randomWordIndex()]; //get another word
             }
-            console.log(`Word is: ${word}`);
+            // console.log(`Word is: ${word}`);
         })
 
 
     function getCurrentWordArr() {
         const numberOfGuessedWords = guessedWords.length //zero at the start as guessedWords array is empty
-        // console.log(guessedWords[numberOfGuessedWords - 1])
         return guessedWords[numberOfGuessedWords - 1]; //returns the current array we are updating
 
     }
@@ -80,14 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkValidWord(wordToCheck) {
         console.log(`word to check ${wordToCheck}`);
-        lookUp = tempData.find(el => el === `${wordToCheck}`);
-        console.log(lookUp);
+        lookUp = wordList.find(el => el === `${wordToCheck}`);
         return lookUp !== undefined;
     }
 
     function handleSubmitWord() { //when enter key is pressed
         const currentWordArr = getCurrentWordArr();
-        console.log('enter key pressed checking word: ', currentWordArr);
+        // console.log('enter key pressed checking word: ', currentWordArr);
 
         if (currentWordArr.length !== 5) {
             return alert('Word must be 5 letters');
@@ -103,36 +93,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isValid) {
             return alert('Sorry Word is Invalid!');
         }
-        wordMap.firstGuess = guessedWords[0]
-        wordMap.secondGuess = guessedWords[1]
-        wordMap.thirdGuess = guessedWords[2]
-        wordMap.fourthGuess = guessedWords[3]
-        wordMap.fifthGuess = guessedWords[4]
 
 
         //animation + color for when word is submitted (green for correct place and letter, yellow for correct letter, grey for incorrect letter)
 
         function updateKeyboard(letter, color) {
-            console.log(letter);
-            console.log(color); //apply this color to keys loop through keys and match with data-attribute
+            // console.log(letter);
+            // console.log(color); //apply this color to keys loop through keys and match with data-attribute
             const keyBoard = document.querySelectorAll(`[data-key=${letter}]`);
             keyBoard[0].style.color = color
             keyBoard[0].style.opacity = '0.5';
         }
 
         function checkWord(letter, index) {
-            console.log(`checking for letter in ${word}`, letter);
+            // console.log(`checking for letter in ${word}`, letter);
 
 
             const correctLetter = word.includes(letter);
 
-            console.log('is correct letter: ' + correctLetter);//true or false
-            console.log('all guesses so far:', guessedWords);
+            // console.log('is correct letter: ' + correctLetter);//true or false
+            // console.log('all guesses so far:', guessedWords);
 
             let letterPosition = word.indexOf(letter);
-            console.log('my guess:',currentWordArr);
+            // console.log('my guess:',currentWordArr);
             let actualWord = word.split('');
-            console.log('actual word: ', actualWord);
+            // console.log('actual word: ', actualWord);
 
             let position = [];
             let lettersArr = [];
@@ -141,17 +126,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     position.push(i);
                 }
             }
-            console.log(position); //gives the index(s) where the letter appears...
+            // console.log(position); //gives the index(s) where the letter appears...
 
-            // console.log('Word map: ', wordMap);
-            console.log('actual letter position: ', letterPosition);
-            console.log('my letter position: ', index);
-            console.log('repeated letter pos: ', position);
+            // // console.log('Word map: ', wordMap);
+            // console.log('actual letter position: ', letterPosition);
+            // console.log('my letter position: ', index);
+            // console.log('repeated letter pos: ', position);
 
             if (!correctLetter) {
                 // no correct letters apply regular color
                 const color = 'rgb(58,58,60)';
-                console.log('no correct letters in word');
+                // console.log('no correct letters in word');
                 updateKeyboard(letter, color);
                 return color;
             }
@@ -159,13 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if ((letterPosition === index || position[1] === index || position[2] === index || position[3] === index)) {
                 //correct letter + position GREEN
                 const color = 'rgb(34,139,34)';
-                console.log('correct letter and position');
+                // console.log('correct letter and position');
                 updateKeyboard(letter, color);
                 return color;
             } else {
                 //correct letter but not correct position YELLOW
                 const color = 'rgb(201 180 88)';
-                console.log('correct letter but not correct position');
+                // console.log('correct letter but not correct position');
                 updateKeyboard(letter, color);
                 return color;
             }
@@ -181,14 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
                 const letterId = row + index;
-                console.log('ROW:', row)
                 const tileEl = document.getElementById(`${letterId}`);
                 const tileColor = checkWord(letter, index);
-                console.log(tileColor);
                 tileEl.classList.add('animateFlip');
                 tileEl.style.color = tileColor;
-                console.log(tileEl);
-
             }, interval)
 
         })
@@ -205,11 +186,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        console.log('guessed word array', currentWordArr)
-
-        console.log(`guessed word string: ${currentWord}`);
-        console.log('all guessedwords so far:', guessedWords);
-        console.log(`total guessed words: ${guessedWordCount}`)
+        // console.log('guessed word array', currentWordArr)
+        //
+        // console.log(`guessed word string: ${currentWord}`);
+        // console.log('all guessedwords so far:', guessedWords);
+        // console.log(`total guessed words: ${guessedWordCount}`)
         // console.log(`total guessed words: ${guessedWords.length}`)
 
         guessedWords.push([]);//if not correct word push new array into guessedWords array
@@ -217,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleDeleteKey() {
         const currentWordArr = getCurrentWordArr();
-        console.log(currentWordArr)
+        // console.log(currentWordArr)
         if (!currentWordArr.length) {
             return
         }
@@ -286,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('total number of words in list: ' + res.length);
                 res = res[randomWordIndex()];
                 word = res
-                console.log(`Word is: ${res}`);
+                // console.log(`Word is: ${res}`);
             })
     })
 
