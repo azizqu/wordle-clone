@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const keys = document.querySelectorAll('.keyboard-row button');
     let lookUp = '';
     let wordList = null;
+    let correctLetters = [];
+    let incorrectPos = [];
     
     async function getData() { //fetch wordList asynchronously 
         try {
@@ -30,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // console.log('total number of words in list: ' + res.length);
             wordList = res;
             // console.log(wordList.length);
-            word = res[randomWordIndex()]; //sets global variable word from the list
-            // word = 'puppy'; //sets global variable word from the list
+            // word = res[randomWordIndex()]; //sets global variable word from the list
+            word = 'bacon'; //sets global variable word from the list
             if (word === undefined) {
                 word = res[randomWordIndex()]; //get another word
             }
@@ -120,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // console.log('actual word: ', actualWord);
 
             let position = [];
-            let lettersArr = [];
             for (let i = 0; i < actualWord.length; i++) {
                 if(actualWord[i] === letter){
                     position.push(i);
@@ -141,8 +142,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return color;
             }
 
-            if ((letterPosition === index || position[1] === index || position[2] === index || position[3] === index)) {
+            if(currentWordArr[index] === actualWord[index]){
+                console.log('my guess: '+currentWordArr[index]);
+                console.log('actual word: '+actualWord[index]);
+            }
+
+// letterPosition === index || position[1] === index || position[2] === index || position[3] === index
+
+            if ((currentWordArr[index] === actualWord[index])) {
                 //correct letter + position GREEN
+                correctLetters.push(currentWordArr[index]);
+                console.log(correctLetters);
                 const color = 'rgb(34,139,34)';
                 // console.log('correct letter and position');
                 updateKeyboard(letter, color);
@@ -150,13 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 //correct letter but not correct position YELLOW
                 const color = 'rgb(201 180 88)';
+                incorrectPos.push(letter);
                 // console.log('correct letter but not correct position');
                 updateKeyboard(letter, color);
                 return color;
             }
 
-        }
 
+        }
+        
+        console.log(correctLetters);
+        console.log(incorrectPos);
         const row = (guessedWordCount * 5) + 1  //5 letters in each word and +1 to get first letterid
 
         const interval = 500; //timeout interval
