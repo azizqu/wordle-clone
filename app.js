@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // console.log('total number of words in list: ' + res.length);
             wordList = res;
             // console.log(wordList.length);
-            // word = res[randomWordIndex()]; //sets global variable word from the list
-            word = 'bacon'; //sets global variable word from the list
+            word = res[randomWordIndex()]; //sets global variable word from the list
+            // word = 'bacon'; //sets global variable word from the list
             if (word === undefined) {
                 word = res[randomWordIndex()]; //get another word
             }
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         }
-        
+
         console.log(correctLetters);
         console.log(incorrectPos);
         const row = (guessedWordCount * 5) + 1  //5 letters in each word and +1 to get first letterid
